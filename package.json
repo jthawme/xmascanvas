@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "parcel ./src/index.html",
-    "build": "parcel build ./src/index.html"
+    "build": "parcel build ./src/index.html --public-url https://xmas.jthaw.club"
   },
   "dependencies": {
     "normalize.css": "^8.0.1",
