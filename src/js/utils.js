@@ -13,3 +13,14 @@ export const tickUpdate = (cb) => {
     }
   };
 };
+
+export const debounce = (cb, timer = 500) => {
+  let debounceTimer = 0;
+
+  return () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      cb();
+    }, timer);
+  };
+};

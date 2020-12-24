@@ -1,7 +1,7 @@
 import loop from "raf-loop";
 import queryString from "query-string";
 import tumult from "tumult";
-import { tickUpdate } from "./utils";
+import { debounce, tickUpdate } from "./utils";
 import { getWebcam } from "./webcam";
 import { animateFavicon, getFrames } from "./favicon";
 
@@ -85,7 +85,7 @@ function getChar(chars, perc) {
 }
 
 const getColor = () => {
-  return Math.floor(Math.random() * 16777215).toString(16);
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 };
 
 function getParam(key, def) {
@@ -104,13 +104,15 @@ function getInitialText() {
   return getParam("text", "Merry Christmas");
 }
 
+console.log(getParam("bgColor", "test"));
+
 const properties = {
   desiredCellSize: CELL_SIZE,
   cellSize: getCellSize(CELL_SIZE),
   downSample: 1,
   chars: getInitialText().split(""),
-  bgColor: `#${getParam("bgColor", getColor())}`,
-  fgColor: `#${getParam("fgColor", getColor())}`,
+  bgColor: getParam("bgColor", getColor()),
+  fgColor: getParam("fgColor", getColor()),
   webcamChoice: true,
   modifyX: Math.random() * 50 + 50,
   modifyY: Math.random() * 50 + 50,
@@ -222,6 +224,10 @@ const engine = loop(update);
 document.body.style.setProperty("--bg-color", properties.bgColor);
 document.body.style.setProperty("--fg-color", properties.fgColor);
 
+const debouncedAnimate = debounce(() => {
+  animateFavicon(properties.chars, properties.bgColor, properties.fgColor);
+});
+
 function start() {
   engine.start();
 
@@ -238,7 +244,7 @@ function start() {
     });
   }
 
-  animateFavicon(properties.chars, properties.bgColor, properties.fgColor);
+  debouncedAnimate();
 }
 
 const charsEl = document.querySelector("#chars");
@@ -248,12 +254,14 @@ charsEl.addEventListener("input", (e) => {
   properties.chars = e.target.value.split("");
   e.target.style.setProperty("--input-width", e.target.value.length);
 
-  const searchParams = new URLSearchParams();
+  const searchParams = new URLSearchParams(window.location.search);
   searchParams.set("text", e.target.value);
 
   const newRelativePathQuery =
     window.location.pathname + "?" + searchParams.toString();
   history.replaceState(null, "", newRelativePathQuery);
+
+  debouncedAnimate();
 });
 
 const withWebcamEl = document.querySelector(".with-webcam");
@@ -270,6 +278,28 @@ withoutWebcamEl.addEventListener("click", (e) => {
   withWebcamEl.classList.toggle("active", properties.webcamChoice);
   withoutWebcamEl.classList.toggle("active", !properties.webcamChoice);
 });
+
+const colsEl = document.querySelector("#cols");
+colsEl.addEventListener(
+  "click",
+  () => {
+    properties.fgColor = getColor();
+    properties.bgColor = getColor();
+    document.body.style.setProperty("--bg-color", properties.bgColor);
+    document.body.style.setProperty("--fg-color", properties.fgColor);
+
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("fgColor", properties.fgColor);
+    searchParams.set("bgColor", properties.bgColor);
+
+    const newRelativePathQuery =
+      window.location.pathname + "?" + searchParams.toString();
+    history.replaceState(null, "", newRelativePathQuery);
+
+    debouncedAnimate();
+  },
+  false
+);
 
 startEl.addEventListener(
   "click",
