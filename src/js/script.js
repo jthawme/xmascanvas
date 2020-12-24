@@ -315,6 +315,10 @@ shareEl.addEventListener(
   false
 );
 
+if (!("share" in navigator)) {
+  shareEl.parentElement.removeChild(shareEl);
+}
+
 startEl.addEventListener(
   "click",
   () => {
