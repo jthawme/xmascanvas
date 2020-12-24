@@ -1,0 +1,124 @@
+@import "normalize.css";
+
+@font-face {
+  font-family: "Arcade";
+  font-style: normal;
+  font-display: block;
+  src: url("./ARCADE_N.woff2") format("woff2");
+}
+
+html,
+body {
+  font-family: "Arcade", monospace;
+
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
+.premodal {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate3d(-50%, -50%, 0);
+
+  padding: 40px;
+
+  .load & {
+    display: none;
+  }
+
+  .webcam-select {
+    opacity: 0.2;
+
+    cursor: pointer;
+
+    &.active {
+      opacity: 1;
+
+      &:before {
+        content: "> ";
+      }
+    }
+
+    &:not(.active):hover,
+    &:not(.active):focus {
+      opacity: 0.5;
+    }
+  }
+
+  button {
+    background-color: var(--fg-color);
+    color: var(--bg-color);
+
+    border: 0;
+    margin: 0;
+    padding: 1em;
+
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      outline: 2px solid var(--fg-color);
+      background-color: var(--bg-color);
+      color: var(--fg-color);
+    }
+  }
+}
+
+#maincanvas,
+#webcam {
+  display: none;
+}
+
+#webcam {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 300px;
+
+  z-index: 10;
+  opacity: 0;
+
+  .webcam-load & {
+    display: block;
+  }
+}
+
+.load #maincanvas {
+  display: block;
+}
+
+.input {
+  position: absolute;
+
+  top: -2px;
+  left: 0;
+
+  z-index: 20;
+  display: none;
+
+  .load & {
+    display: block;
+  }
+}
+
+#chars {
+  font-size: var(--cell-size);
+  padding: 0;
+  margin: 0;
+  border: 0;
+
+  outline: 0;
+
+  background-color: var(--bg-color);
+  width: calc(var(--input-width, 15) * var(--cell-size));
+  min-width: 30px;
+  height: 1em;
+  color: var(--fg-color);
+
+  line-height: 1;
+}
