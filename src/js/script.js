@@ -301,6 +301,20 @@ colsEl.addEventListener(
   false
 );
 
+const shareEl = document.querySelector("#sharebtn");
+shareEl.addEventListener(
+  "click",
+  () => {
+    navigator.share({
+      text: `${properties.chars.join(
+        ""
+      )} – get Xmas trippy with lil old J Dawg`,
+      url: window.location.href,
+    });
+  },
+  false
+);
+
 startEl.addEventListener(
   "click",
   () => {
